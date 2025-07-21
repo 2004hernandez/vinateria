@@ -2,9 +2,11 @@ from fastapi import FastAPI, Query
 import joblib
 import os
 import random
+import uvicorn  # solo se usa en el bloque _main_
+import pandas as pd
 
 # Cargar modelo
-modelo_path = os.path.join(os.path.dirname(__file__), "vinateria.pkl")
+modelo_path = os.path.join(os.path.dirname(_file_), "vinateria.pkl")
 rules = joblib.load(modelo_path)
 
 app = FastAPI()
@@ -25,8 +27,7 @@ def recomendar_ids(ids, limite=15):
 
     recomendados = list(recomendados)
 
-    # Usar semilla basada en IDs de entrada para que sea determinista
-    semilla = sum(ids)  # cualquier función hash simple que sea reproducible
+    semilla = sum(ids)
     random.seed(semilla)
     random.shuffle(recomendados)
 
@@ -38,3 +39,8 @@ def obtener_recomendaciones(ids: list[int] = Query(...)):
         "input_ids": ids,
         "ids_recomendados": recomendar_ids(ids)
     }
+
+# Solo necesario si corres localmente
+if _name_ == "_main_":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
