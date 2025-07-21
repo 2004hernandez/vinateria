@@ -2,11 +2,11 @@ from fastapi import FastAPI, Query
 import joblib
 import os
 import random
-import uvicorn  # solo se usa en el bloque _main_
+import uvicorn  # solo se usa en el bloque __main__
 import pandas as pd
 
 # Cargar modelo
-modelo_path = os.path.join(os.path.dirname(_file_), "vinateria.pkl")
+modelo_path = os.path.join(os.path.dirname(__file__), "vinateria.pkl")
 rules = joblib.load(modelo_path)
 
 app = FastAPI()
@@ -41,6 +41,6 @@ def obtener_recomendaciones(ids: list[int] = Query(...)):
     }
 
 # Solo necesario si corres localmente
-if _name_ == "_main_":
+if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run("main:app", host="0.0.0.0", port=port)
